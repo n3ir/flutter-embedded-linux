@@ -29,6 +29,8 @@ jobs:
           elogind-dev
           wayland-protocols
           libx11-dev
+          clang16
+          cmake
         shell-name: alpine.sh
 
     - name: Create Build Environment
