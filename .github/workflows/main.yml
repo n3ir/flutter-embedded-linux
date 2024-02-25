@@ -33,6 +33,7 @@ jobs:
           cmake
           make
           mesa-egl
+          mesa-dev
         
     - name: link binaries
       run: ln -s /usr/bin/clang-16 /usr/bin/clang && ln -s /usr/bin/clang++-16 /usr/bin/clang++
