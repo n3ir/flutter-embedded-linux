@@ -10,11 +10,11 @@
 namespace flutter {
 
 namespace {
-constexpr uint kTitleBarHeightDIP = 30;
+constexpr uint32_t kTitleBarHeightDIP = 30;
 
-constexpr uint kButtonWidthDIP = 15;
-constexpr uint kButtonHeightDIP = 15;
-constexpr uint kButtonMarginDIP = 10;
+constexpr uint32_t kButtonWidthDIP = 15;
+constexpr uint32_t kButtonHeightDIP = 15;
+constexpr uint32_t kButtonMarginDIP = 10;
 }  // namespace
 
 WindowDecorationsWayland::WindowDecorationsWayland(
