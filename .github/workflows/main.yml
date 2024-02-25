@@ -19,8 +19,6 @@ jobs:
         arch: armhf
         branch: edge
         packages: >
-          dbus-dev
-          dbus-static
           mesa-gles
           libxkbcommon-dev
           wayland-dev
