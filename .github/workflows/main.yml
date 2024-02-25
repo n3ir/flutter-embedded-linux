@@ -21,24 +21,30 @@ jobs:
         packages: >
           dbus-dev
           dbus-static
-        shell-name: alpine-target.sh
-        
-    - name: Install libraries
-      run: |
-        sudo apt update
-        sudo apt install libgles2-mesa-dev libegl1-mesa-dev libxkbcommon-dev libwayland-dev libdrm-dev libgbm-dev libinput-dev libudev-dev libsystemd-dev wayland-protocols libx11-dev
+          mesa-gles
+          libxkbcommon-dev
+          wayland-dev
+          libdrm
+          mesa-gbm
+          libinput
+          eudev-dev
+          elogind-dev
+          wayland-protocols
+          libx11-dev
+        shell-name: alpine.sh
 
     - name: Create Build Environment
+      shell: alpine.sh {0}
       run: cmake -E make_directory ${{github.workspace}}/build
       
     - name: Configure CMake to build libflutter_elinux.so
-      shell: bash
+      shell: alpine.sh {0}
       working-directory: ${{github.workspace}}/build
       run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DBUILD_ELINUX_SO=ON -DBACKEND_TYPE=WAYLAND ..
 
     - name: Build libflutter_elinux.so
       working-directory: ${{github.workspace}}/build
-      shell: bash
+      shell: alpine.sh {0}
       run: cmake --build . --config $BUILD_TYPE
 
     - name: Archive production artifacts
