@@ -1,0 +1,48 @@
+name: build-test
+
+on: []
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Alpine Linux for armhf (target arch)
+      id: alpine-target
+      uses: jirutka/setup-alpine@v1
+      with:
+        arch: armhf
+        branch: edge
+        packages: >
+          dbus-dev
+          dbus-static
+        shell-name: alpine-target.sh
+        
+    - name: Install libraries
+      run: |
+        sudo apt update
+        sudo apt install libgles2-mesa-dev libegl1-mesa-dev libxkbcommon-dev libwayland-dev libdrm-dev libgbm-dev libinput-dev libudev-dev libsystemd-dev wayland-protocols libx11-dev
+
+    - name: Create Build Environment
+      run: cmake -E make_directory ${{github.workspace}}/build
+      
+    - name: Configure CMake to build libflutter_elinux.so
+      shell: bash
+      working-directory: ${{github.workspace}}/build
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DBUILD_ELINUX_SO=ON -DBACKEND_TYPE=WAYLAND ..
+
+    - name: Build libflutter_elinux.so
+      working-directory: ${{github.workspace}}/build
+      shell: bash
+      run: cmake --build . --config $BUILD_TYPE
+
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build
+        path: ${{github.workspace}}/build/libflutter_exlinux.so
