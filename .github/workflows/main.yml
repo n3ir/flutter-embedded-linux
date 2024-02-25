@@ -32,7 +32,10 @@ jobs:
           clang16
           cmake
           make
-        shell-name: alpine.sh
+        
+    - name: link binaries
+      run: ln -s /usr/bin/clang-16 /usr/bin/clang && ln -s /usr/bin/clang++-16 /usr/bin/clang++
+      shell: alpine.sh --root {0}
 
     - name: Create Build Environment
       shell: alpine.sh {0}
