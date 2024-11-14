@@ -34,6 +34,13 @@ namespace {
 constexpr char kXcursorSizeEnvironmentKey[] = "XCURSOR_SIZE";
 }  // namespace
 
+// Track input devices for each seat
+struct seat_inputs {
+  wl_pointer* pointer = nullptr;
+  wl_touch* touch = nullptr;
+  wl_keyboard* keyboard = nullptr;
+};
+
 class ELinuxWindowWayland : public ELinuxWindow, public WindowBindingHandler {
  public:
   ELinuxWindowWayland(FlutterDesktopViewProperties view_properties);
@@ -153,6 +160,7 @@ class ELinuxWindowWayland : public ELinuxWindow, public WindowBindingHandler {
   bool maximised_;
   uint32_t last_frame_time_;
   bool enable_impeller_ = false;
+  int32_t transform_ = WL_OUTPUT_TRANSFORM_NORMAL;
 
   // Indicates that exists a keyboard show request from Flutter Engine.
   bool is_requested_show_virtual_keyboard_;
@@ -160,12 +168,10 @@ class ELinuxWindowWayland : public ELinuxWindow, public WindowBindingHandler {
   wl_display* wl_display_;
   wl_registry* wl_registry_;
   wl_compositor* wl_compositor_;
-  wl_seat* wl_seat_;
   wl_output* wl_output_;
   wl_shm* wl_shm_;
-  wl_pointer* wl_pointer_;
-  wl_touch* wl_touch_;
-  wl_keyboard* wl_keyboard_;
+  std::unordered_map<wl_seat*, seat_inputs> seat_inputs_map_;
+  std::unordered_map<uint32_t, wl_seat*> registry_names_to_seat_ptr_;
   wl_surface* wl_cursor_surface_;
   xdg_wm_base* xdg_wm_base_;
   xdg_surface* xdg_surface_;

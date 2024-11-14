@@ -76,7 +76,8 @@ typedef struct {
   size_t width;
   // Height of the EGLImage.
   size_t height;
-  // An optional callback that gets invoked when the |egl_image| can be released.
+  // An optional callback that gets invoked when the |egl_image| can be
+  // released.
   void (*release_callback)(void* release_context);
   // Opaque data passed to |release_callback|.
   void* release_context;
@@ -142,12 +143,12 @@ typedef const FlutterDesktopGpuSurfaceDescriptor* (
                                               size_t height,
                                               void* user_data);
 
-typedef const FlutterDesktopEGLImage* (
-    *FlutterDesktopEGLImageTextureCallback)(size_t width,
-                                            size_t height,
-                                            void* egl_display,
-                                            void* egl_context,
-                                            void* user_data);
+typedef const FlutterDesktopEGLImage* (*FlutterDesktopEGLImageTextureCallback)(
+    size_t width,
+    size_t height,
+    void* egl_display,
+    void* egl_context,
+    void* user_data);
 
 // An object used to configure pixel buffer textures.
 typedef struct {
@@ -194,13 +195,15 @@ FLUTTER_EXPORT int64_t FlutterDesktopTextureRegistrarRegisterExternalTexture(
     FlutterDesktopTextureRegistrarRef texture_registrar,
     const FlutterDesktopTextureInfo* info);
 
-// Unregisters an existing texture from the Flutter engine for a |texture_id|.
-// Returns true on success or false if the specified texture doesn't exist.
+// Asynchronously unregisters the texture identified by |texture_id| from the
+// Flutter engine.
+// An optional |callback| gets invoked upon completion.
 // This function can be called from any thread.
-// However, textures must not be unregistered while they're in use.
-FLUTTER_EXPORT bool FlutterDesktopTextureRegistrarUnregisterExternalTexture(
+FLUTTER_EXPORT void FlutterDesktopTextureRegistrarUnregisterExternalTexture(
     FlutterDesktopTextureRegistrarRef texture_registrar,
-    int64_t texture_id);
+    int64_t texture_id,
+    void (*callback)(void* user_data),
+    void* user_data);
 
 // Marks that a new texture frame is available for a given |texture_id|.
 // Returns true on success or false if the specified texture doesn't exist.

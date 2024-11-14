@@ -107,7 +107,8 @@ class GpuSurfaceTexture {
 // The available texture variants.
 // Only PixelBufferTexture is currently implemented.
 // Other variants are expected to be added in the future.
-typedef std::variant<PixelBufferTexture, GpuSurfaceTexture, EGLImageTexture> TextureVariant;
+typedef std::variant<PixelBufferTexture, GpuSurfaceTexture, EGLImageTexture>
+    TextureVariant;
 
 // An object keeping track of external textures.
 //
@@ -127,8 +128,13 @@ class TextureRegistrar {
   // the callback that was provided upon creating the texture.
   virtual bool MarkTextureFrameAvailable(int64_t texture_id) = 0;
 
-  // Unregisters an existing Texture object.
-  // Textures must not be unregistered while they're in use.
+  // Asynchronously unregisters an existing texture object.
+  // Upon completion, the optional |callback| gets invoked.
+  virtual void UnregisterTexture(int64_t texture_id,
+                                 std::function<void()> callback) = 0;
+
+  // Unregisters an existing texture object.
+  // DEPRECATED: Use UnregisterTexture(texture_id, optional_callback) instead.
   virtual bool UnregisterTexture(int64_t texture_id) = 0;
 };
 
